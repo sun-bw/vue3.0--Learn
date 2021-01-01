@@ -8,22 +8,50 @@
 <script lang="ts">
 // import { defineComponent } from 'vue';
 // import HelloWorld from './components/HelloWorld.vue';
-import { ref, computed } from 'vue'
+import { ref, computed, reactive, toRefs } from 'vue'
+interface DataProps {
+  count: number;
+  double: number;
+  increase: () => void;
+}
 export default ({
   name: 'App',
   setup() {
-    const count = ref(0)
-    const double = computed(() => {
-      return count.value * 2
+    /**
+     *  // // 响应式数据类型ref
+     */
+    // const count = ref(0)
+    // const double = computed(() => {
+    //   return count.value * 2
+    // })
+    // const increase = () => {
+    //   console.log(count)
+    //   count.value++
+    // }
+    // return {
+    //   count,
+    //   increase,
+    //   double
+    // }
+
+    const data: DataProps = reactive({
+      count: 0,
+      // 1。修改值不需要想ref一样.value
+      increase: () => {data.count++},
+      /**
+       * 由于computed回调中使用data.count会造成类型推论循环
+       * vue3局限性，暂时不能解决，自动把data推断成any类型
+       * 需要显示的给data指定一个类型
+       */
+      double: computed(() => data.count * 2)
     })
-    const increase = () => {
-      console.log(count)
-      count.value++
-    }
+    /**
+     * 解决，直接使用return ...data,data中的对象变为正常js对象
+     * 没有响应式，使用toRefs，展开的data依旧为响应式对象
+     */
+    const refData = toRefs(data)
     return {
-      count,
-      increase,
-      double
+      ...refData
     }
   }
 });
