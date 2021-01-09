@@ -124,3 +124,41 @@ errorCaptured -> onErrorCaptured
 onRenderTracked
 onRenderTriggered
 ```
+### 4.watch的使用
+```
+const data: DataProps = reactive({
+	count: 0,
+	increase: () => {data.count++}
+})
+const greetings = ref('')
+const updateGreetings = () => {
+	greetings.value += 'hello!'
+}
+//监听greetings值的变化
+watch(greetings, (newValue, oldValue) => {
+	console.log(newValue, oldValue)
+	document.title = 'updated' + greetings.value
+})
+ /**
+ * watch多个值,第一个参数可以是个数组
+ */
+watch([greetings, data], (newValue, oldValue) => {
+	console.log(newValue, oldValue)
+	document.title = 'updated' + greetings.value
+})
+
+/**
+* watch，data中的单个值,不能data.count进行watch.这样count会变成number类型，不是响应式对象了
+* 写成一个function进行watch。
+* watch，监听响应式数据的变化。进行数据处理
+*/
+watch([greetings, () => data.count], (newValue, oldValue) => {
+	console.log(newValue, oldValue)
+	document.title = 'updated' + greetings.value
+})
+return {
+	...refData,
+	greetings,
+	updateGreetings
+}
+```
