@@ -43,7 +43,8 @@ vue3支持大多数2的特性，支持2的写法
             vue2对于typescript的支持非常的有限
 ### 3.响应式对象
     ref和reactive的使用
-    <template>
+    ```
+        <template>
   <img alt="Vue logo" src="./assets/logo.png">
   <h1>{{count}}</h1>
   <h1>{{double}}</h1>
@@ -132,3 +133,5 @@ export default ({
   margin-top: 60px;
 }
 </style>
+
+    ```
