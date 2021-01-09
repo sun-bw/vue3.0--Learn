@@ -106,7 +106,7 @@ export default ({
   }
 });
 ```
-### 新的生命周期
+### 4.新的生命周期
 ```
 beforeCreate -> use setup()
 created -> use setup()
