@@ -2,17 +2,25 @@
   <img alt="Vue logo" src="./assets/logo.png">
   <h1>{{count}}</h1>
   <h1>{{double}}</h1>
+  <ul>
+    <li v-for="number in numbers" :key="number">
+      <h1>{{number}}</h1>
+    </li>
+    <h1>{{person.name}}</h1>
+  </ul>
   <button @click="increase">加加</button>
 </template>
 
 <script lang="ts">
 // import { defineComponent } from 'vue';
 // import HelloWorld from './components/HelloWorld.vue';
-import { ref, computed, reactive, toRefs } from 'vue'
+import { ref, computed, reactive, toRefs, onMounted, onUpdated, onRenderTriggered } from 'vue'
 interface DataProps {
   count: number;
   double: number;
   increase: () => void;
+  numbers: number[];
+  person: {name?: string };
 }
 export default ({
   name: 'App',
@@ -33,7 +41,15 @@ export default ({
     //   increase,
     //   double
     // }
-
+    onMounted(() => {
+      console.log('onMounted')
+    })
+    onUpdated(() => {
+      console.log('onUpdate')
+    })
+    onRenderTriggered((event) => {
+      console.log(event)
+    })
     const data: DataProps = reactive({
       count: 0,
       // 1。修改值不需要想ref一样.value
@@ -43,8 +59,12 @@ export default ({
        * vue3局限性，暂时不能解决，自动把data推断成any类型
        * 需要显示的给data指定一个类型
        */
-      double: computed(() => data.count * 2)
+      double: computed(() => data.count * 2),
+      numbers: [0, 1, 2],
+      person:{}
     })
+    data.numbers[0] = 5;
+    data.person.name = 'viking';
     /**
      * 解决，直接使用return ...data,data中的对象变为正常js对象
      * 没有响应式，使用toRefs，展开的data依旧为响应式对象
