@@ -106,3 +106,21 @@ export default ({
   }
 });
 ```
+### 新的生命周期
+```
+beforeCreate -> use setup()
+created -> use setup()
+beforeMount -> onBeforeMount
+mounted -> onMounted
+beforeUpdate -> onBeforeUpdate
+updated -> onUpdated
+beforeDestory -> onBeforeUnmount
+destoryed -> onUnmounted
+activated -> onActivated
+deactivated -> onDeactivated
+errorCaptured -> onErrorCaptured
+
+//调试
+onRenderTracked
+onRenderTriggered
+```
