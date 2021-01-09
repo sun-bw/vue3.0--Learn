@@ -8,13 +8,15 @@
     </li>
     <h1>{{person.name}}</h1>
   </ul>
+  <h1>{{greetings}}</h1>
   <button @click="increase">加加</button>
+  <button @click="updateGreetings">title</button>
 </template>
 
 <script lang="ts">
 // import { defineComponent } from 'vue';
 // import HelloWorld from './components/HelloWorld.vue';
-import { ref, computed, reactive, toRefs, onMounted, onUpdated, onRenderTriggered } from 'vue'
+import { ref, computed, reactive, toRefs, onMounted, onUpdated, onRenderTriggered, watch } from 'vue'
 interface DataProps {
   count: number;
   double: number;
@@ -63,6 +65,31 @@ export default ({
       numbers: [0, 1, 2],
       person:{}
     })
+    const greetings = ref('')
+    const updateGreetings = () => {
+      console.log(111)
+      greetings.value += 'Hello!'
+    }
+    watch(greetings, (newValue, oldValue) => {
+      console.log(newValue, oldValue)
+      document.title = 'updated' + greetings.value
+    })
+    /**
+     * watch多个值,第一个参数可以是个数组
+     */
+    watch([greetings, data], (newValue, oldValue) => {
+      console.log(newValue, oldValue)
+      document.title = 'updated' + greetings.value
+    })
+    /**
+     * watch，data中的单个值,不能data.count进行watch.这样count会变成number类型，不是响应式对象了
+     * 写成一个function进行watch。
+     * watch，监听响应式数据的变化。进行数据处理
+     */
+    watch([greetings, () => data.count], (newValue, oldValue) => {
+      console.log(newValue, oldValue)
+      document.title = 'updated' + greetings.value
+    })
     data.numbers[0] = 5;
     data.person.name = 'viking';
     /**
@@ -71,7 +98,9 @@ export default ({
      */
     const refData = toRefs(data)
     return {
-      ...refData
+      ...refData,
+      greetings,
+      updateGreetings
     }
   }
 });
