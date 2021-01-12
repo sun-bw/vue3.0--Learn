@@ -9,6 +9,8 @@
     <h1>{{person.name}}</h1>
   </ul>
   <h1>{{greetings}}</h1>
+  <h1 v-if="loading">Loading...</h1>
+  <img v-if="loaded" :src='result[0].url'/>
   <h1>x:{{x}}y:{{y}}</h1>
   <button @click="increase">加加</button>
   <button @click="updateGreetings">title</button>
@@ -19,12 +21,23 @@
 // import HelloWorld from './components/HelloWorld.vue';
 import { ref, computed, reactive, toRefs, onMounted, onUpdated, onRenderTriggered, watch, onUnmounted } from 'vue'
 import useMousePosition from './hooks/useMousePosition'
+import useURLLoader from './hooks/useURLLoader'
 interface DataProps {
   count: number;
   double: number;
   increase: () => void;
   numbers: number[];
   person: {name?: string };
+}
+interface DogResult {
+    message: string;
+    status: string;
+}
+interface CatResult {
+    id: string;
+    url: string;
+    width: number;
+    height: number;
 }
 export default ({
   name: 'App',
@@ -76,7 +89,6 @@ export default ({
     /**
      * 鼠标点击坐标位置
      */
-    const { x, y} = useMousePosition()
     // const x = ref(0)
     // const y = ref(0)
     // const updatteMouse = (e: MouseEvent) => {
@@ -111,6 +123,18 @@ export default ({
     })
     data.numbers[0] = 5;
     data.person.name = 'viking';
+
+    /**
+     * 自定义hooks，ts泛型改造
+     * https://dog.ceo/api/breeds/image/random
+     */
+    const { x, y} = useMousePosition()
+    const { result, loading, loaded } = useURLLoader<CatResult[]>('https://api.thecatapi.com/v1/images/search?limit=1')
+    watch(result, () => {
+        if(result.value) {
+            console.log('value', result.value[0].url)
+        }
+    })
     /**
      * 解决，直接使用return ...data,data中的对象变为正常js对象
      * 没有响应式，使用toRefs，展开的data依旧为响应式对象
@@ -121,7 +145,10 @@ export default ({
       greetings,
       updateGreetings,
       x,
-      y
+      y,
+      result, 
+      loading, 
+      loaded
     }
   }
 });
