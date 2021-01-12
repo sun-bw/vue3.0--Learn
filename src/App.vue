@@ -9,6 +9,7 @@
     <h1>{{person.name}}</h1>
   </ul>
   <h1>{{greetings}}</h1>
+  <h1>x:{{x}}y:{{y}}</h1>
   <button @click="increase">加加</button>
   <button @click="updateGreetings">title</button>
 </template>
@@ -16,7 +17,8 @@
 <script lang="ts">
 // import { defineComponent } from 'vue';
 // import HelloWorld from './components/HelloWorld.vue';
-import { ref, computed, reactive, toRefs, onMounted, onUpdated, onRenderTriggered, watch } from 'vue'
+import { ref, computed, reactive, toRefs, onMounted, onUpdated, onRenderTriggered, watch, onUnmounted } from 'vue'
+import useMousePosition from './hooks/useMousePosition'
 interface DataProps {
   count: number;
   double: number;
@@ -70,17 +72,34 @@ export default ({
       console.log(111)
       greetings.value += 'Hello!'
     }
-    watch(greetings, (newValue, oldValue) => {
-      console.log(newValue, oldValue)
-      document.title = 'updated' + greetings.value
-    })
+
+    /**
+     * 鼠标点击坐标位置
+     */
+    const { x, y} = useMousePosition()
+    // const x = ref(0)
+    // const y = ref(0)
+    // const updatteMouse = (e: MouseEvent) => {
+    //     x.value = e.pageX
+    //     y.value = e.pageY
+    // }
+    // onMounted(() => {
+    //     document.addEventListener('click', updatteMouse)
+    // })
+    // onUnmounted(() => {
+    //     document.removeEventListener('click', updatteMouse)
+    // })
+    // watch(greetings, (newValue, oldValue) => {
+    //   console.log(newValue, oldValue)
+    //   document.title = 'updated' + greetings.value
+    // })
     /**
      * watch多个值,第一个参数可以是个数组
      */
-    watch([greetings, data], (newValue, oldValue) => {
-      console.log(newValue, oldValue)
-      document.title = 'updated' + greetings.value
-    })
+    // watch([greetings, data], (newValue, oldValue) => {
+    //   console.log(newValue, oldValue)
+    //   document.title = 'updated' + greetings.value
+    // })
     /**
      * watch，data中的单个值,不能data.count进行watch.这样count会变成number类型，不是响应式对象了
      * 写成一个function进行watch。
@@ -100,7 +119,9 @@ export default ({
     return {
       ...refData,
       greetings,
-      updateGreetings
+      updateGreetings,
+      x,
+      y
     }
   }
 });
